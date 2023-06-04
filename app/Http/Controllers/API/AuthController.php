@@ -17,7 +17,8 @@ class AuthController extends Controller
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required',
-            'confirm_password' => 'required|same:password'
+            'confirm_password' => 'required|same:password',
+            'phone_number' => 'required|regex:/^[0-9]{10,12}$/'
         ]);
 
         if ($validator->fails()) {
@@ -62,19 +63,28 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Invalid email or password',
                 'data' => null
-            ]);
+            ], 401);
         }
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User logged out successfully'
-        ]);
+        $token = $request->user()->currentAccessToken();
+        if ($token) {
+            $token->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'User logged out successfully'
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to logout',
+                'data' => null
+            ], 500);
+        }
     }
+
 
     public function protectedResource(Request $request)
     {

@@ -3,6 +3,8 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\MahasiswaController;
 use App\Http\Controllers\API\JobCategoryController;
+use App\Http\Controllers\API\ProfileController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +39,13 @@ Route::get('job-categories/show/{id}', [JobCategoryController::class, 'show']);
 Route::post('job-categories/update/{id}', [JobCategoryController::class, 'update']);
 Route::delete('job-categories/destroy/{id}', [JobCategoryController::class, 'destroy']);
 
+// Profile Page
+Route::prefix('profile')->group(function () {
+    Route::post('create', [ProfileController::class, 'create']);
+    Route::get('show', [ProfileController::class, 'show']);
+    Route::put('update', [ProfileController::class, 'update']);
+    Route::delete('delete', [ProfileController::class, 'delete']);
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
