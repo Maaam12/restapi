@@ -41,10 +41,10 @@ Route::delete('job-categories/destroy/{id}', [JobCategoryController::class, 'des
 
 // Profile Page
 Route::prefix('profile')->group(function () {
-    Route::post('create', [ProfileController::class, 'create']);
-    Route::get('show', [ProfileController::class, 'show']);
-    Route::put('update', [ProfileController::class, 'update']);
-    Route::delete('delete', [ProfileController::class, 'delete']);
+    Route::post('profile/create', [ProfileController::class, 'create']);
+    Route::get('profile/show/{id}', [ProfileController::class, 'show']);
+    Route::put('profile/update/{id}', [ProfileController::class, 'update']);
+    Route::delete('profile/delete/{id}', [ProfileController::class, 'delete']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
