@@ -4,6 +4,8 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\MahasiswaController;
 use App\Http\Controllers\API\JobCategoryController;
 use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\TestController;
+
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -40,12 +42,18 @@ Route::post('job-categories/update/{id}', [JobCategoryController::class, 'update
 Route::delete('job-categories/destroy/{id}', [JobCategoryController::class, 'destroy']);
 
 // Profile Page
-Route::prefix('profile')->group(function () {
-    Route::post('profile/create', [ProfileController::class, 'create']);
-    Route::get('profile/show/{id}', [ProfileController::class, 'show']);
-    Route::put('profile/update/{id}', [ProfileController::class, 'update']);
-    Route::delete('profile/delete/{id}', [ProfileController::class, 'delete']);
-});
+Route::get('profiles', [ProfileController::class, 'index']);
+Route::post('profiles/create', [ProfileController::class, 'store']);
+Route::get('profiles/show/{id}', [ProfileController::class, 'show']);
+Route::post('profiles/update/{id}', [ProfileController::class, 'update']);
+Route::delete('profiles/destroy/{id}', [ProfileController::class, 'destroy']);
+
+// Test MBTI
+Route::get('tests', [TestController::class, 'index']);
+Route::post('tests/create', [TestController::class, 'store']);
+Route::get('tests/show/{id}', [TestController::class, 'show']);
+Route::put('tests/update/{id}', [TestController::class, 'update']);
+Route::delete('tests/destroy/{id}', [TestController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

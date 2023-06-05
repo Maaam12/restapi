@@ -5,11 +5,21 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Profile;
-use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
-    public function create(Request $request)
+    public function index()
+    {
+        $profiles = Profile::all();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profiles retrieved successfully',
+            'data' => $profiles
+        ]);
+    }
+
+    public function store(Request $request)
     {
         // Validasi input
         $request->validate([
@@ -18,10 +28,12 @@ class ProfileController extends Controller
             'address' => 'required|string',
             'about' => 'nullable|string',
         ]);
-        
+
         $profile = new Profile();
-        $profile->fill($request->all());
-        $profile->user_id = Auth::id();
+        $profile->school = $request->input('school');
+        $profile->class = $request->input('class');
+        $profile->address = $request->input('address');
+        $profile->about = $request->input('about');
         $profile->save();
 
         return response()->json([
@@ -31,9 +43,17 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function show(Request $request)
+    public function show($id)
     {
-        $profile = Profile::where('user_id', Auth::id())->first();
+        $profile = Profile::find($id);
+
+        if (!$profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile not found',
+                'data' => null
+            ], 404);
+        }
 
         return response()->json([
             'success' => true,
@@ -42,7 +62,7 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
         // Validasi input
         $request->validate([
@@ -52,8 +72,20 @@ class ProfileController extends Controller
             'about' => 'nullable|string',
         ]);
 
-        $profile = Profile::where('user_id', Auth::id())->first();
-        $profile->fill($request->all());
+        $profile = Profile::find($id);
+
+        if (!$profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile not found',
+                'data' => null
+            ], 404);
+        }
+
+        $profile->school = $request->input('school');
+        $profile->class = $request->input('class');
+        $profile->address = $request->input('address');
+        $profile->about = $request->input('about');
         $profile->save();
 
         return response()->json([
@@ -63,9 +95,19 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function delete(Request $request)
+
+    public function destroy($id)
     {
-        $profile = Profile::where('user_id', Auth::id())->first();
+        $profile = Profile::find($id);
+
+        if (!$profile) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Profile not found',
+                'data' => null
+            ], 404);
+        }
+
         $profile->delete();
 
         return response()->json([

@@ -13,28 +13,14 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-            'confirm_password' => 'required|same:password',
-            'phone_number' => 'required|regex:/^[0-9]{10,12}$/'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Please fill all required fields',
-                'data' => $validator->errors()
-            ]);
-        }
-
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
 
         $success['token'] = $user->createToken('auth_token')->plainTextToken;
         $success['name'] = $user->name;
+        $success['email'] = $user->email;
+        $success['username'] = $user->username;
 
         return response()->json([
             'success' => true,
@@ -52,6 +38,7 @@ class AuthController extends Controller
             $success['token'] = $user->createToken('auth_token')->plainTextToken;
             $success['name'] = $user->name;
             $success['email'] = $user->email;
+            $success['username'] = $user->username;
 
             return response()->json([
                 'success' => true,
@@ -66,6 +53,7 @@ class AuthController extends Controller
             ], 401);
         }
     }
+
 
     public function logout(Request $request)
     {
